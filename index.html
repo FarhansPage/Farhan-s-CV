@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login CV Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #3498db, #8e44ad);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 450px;
+            width: 100%;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            padding: 40px;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .login-header h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .login-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .remember-me input {
+            margin-right: 8px;
+        }
+        
+        .remember-me label {
+            color: #666;
+        }
+        
+        .login-button {
+            width: 100%;
+            padding: 14px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .login-button:hover {
+            background-color: #2980b9;
+        }
+        
+        .guest-button {
+            width: 100%;
+            padding: 14px;
+            background-color: transparent;
+            color: #3498db;
+            border: 1px solid #3498db;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
+        
+        .guest-button:hover {
+            background-color: #eaf4fd;
+        }
+        
+        .links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        
+        .links a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .divider span {
+            padding: 0 10px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .portal-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #3498db;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .success-message {
+            color: #27ae60;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
+            }
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        
+        .modal-buttons button {
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .modal-cancel {
+            background-color: #e0e0e0;
+            border: none;
+            color: #333;
+        }
+        
+        .modal-confirm {
+            background-color: #3498db;
+            border: none;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="portal-title">Portal CV Online</div>
+        <div class="login-header">
+            <h1>Selamat Datang</h1>
+            <p>Silakan masuk untuk melanjutkan ke halaman CV Anda</p>
+        </div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Masukkan email Anda" required>
+                <div id="emailError" class="error-message">Email tidak valid</div>
+            </div>
+            <div class="form-group">
+                <label for="password">Kata Sandi</label>
+                <input type="password" id="password" name="password" placeholder="Masukkan kata sandi Anda" required>
+                <div id="passwordError" class="error-message">Kata sandi tidak valid</div>
+            </div>
+            <div class="remember-me">
+                <input type="checkbox" id="remember" name="remember">
+                <label for="remember">Ingat saya</label>
+            </div>
+            <button type="submit" class="login-button">Masuk</button>
+            <div id="loginSuccess" class="success-message">Login berhasil!</div>
+            <div id="loginError" class="error-message">Email atau kata sandi salah</div>
+        </form>
+        
+        <div class="divider">
+            <span>ATAU</span>
+        </div>
+        
+        <button id="guestButton" class="guest-button">Masuk sebagai Tamu</button>
+        
+        <div class="links">
+            <a href="#" id="forgotPassword">Lupa kata sandi?</a>
+            <a href="#" id="registerLink">Daftar akun baru</a>
+        </div>
+    </div>
+    
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Buat Akun Baru</div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" name="registerEmail" placeholder="Masukkan email Anda" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Kata Sandi</label>
+                    <input type="password" id="registerPassword" name="registerPassword" placeholder="Buat kata sandi" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Konfirmasi Kata Sandi</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Konfirmasi kata sandi" required>
+                </div>
+                <div id="registerError" class="error-message">Terjadi kesalahan</div>
+                <div class="modal-buttons">
+                    <button type="button" class="modal-cancel" id="cancelRegister">Batal</button>
+                    <button type="submit" class="modal-confirm">Daftar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Simpan kredensial default
+        let users = [
+            { email: "farhanbahri@student.telkomuniversity.ac.id", password: "12345" }
+        ];
+        
+        // Cek apakah ada pengguna tersimpan di localStorage
+        const savedUsers = localStorage.getItem('cvUsers');
+        if (savedUsers) {
+            users = JSON.parse(savedUsers);
+        } else {
+            // Simpan pengguna default ke localStorage
+            localStorage.setItem('cvUsers', JSON.stringify(users));
+        }
+        
+        // Fungsi untuk redirect ke halaman CV
+        function redirectToCV() {
+            // Ganti URL ini dengan halaman CV Anda
+            alert("Login berhasil! Mengalihkan ke halaman CV...");
+            window.location.href = "CV_FARHAN.html";
+        }
+        
+        // Validasi form login
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const emailError = document.getElementById('emailError');
+            const passwordError = document.getElementById('passwordError');
+            const loginError = document.getElementById('loginError');
+            const loginSuccess = document.getElementById('loginSuccess');
+            
+            // Reset pesan error
+            emailError.style.display = 'none';
+            passwordError.style.display = 'none';
+            loginError.style.display = 'none';
+            loginSuccess.style.display = 'none';
+            
+            // Validasi email dan password
+            let isValid = true;
+            
+            if (!email || !email.includes('@')) {
+                emailError.style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!password || password.length < 6) {
+                passwordError.style.display = 'block';
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Cek kredensial
+                const user = users.find(u => u.email === email && u.password === password);
+                
+                if (user) {
+                    loginSuccess.style.display = 'block';
+                    
+                    // Jika "Ingat saya" dicentang, simpan email ke sessionStorage
+                    if (document.getElementById('remember').checked) {
+                        sessionStorage.setItem('rememberedEmail', email);
+                    }
+                    
+                    // Redirect setelah login berhasil
+                    setTimeout(redirectToCV, 1000);
+                } else {
+                    loginError.style.display = 'block';
+                }
+            }
+        });
+        
+        // Masuk sebagai tamu
+        document.getElementById('guestButton').addEventListener('click', function() {
+            // Simpan status tamu ke sessionStorage
+            sessionStorage.setItem('guestMode', 'true');
+            redirectToCV();
+        });
+        
+        // Tampilkan modal pendaftaran
+        document.getElementById('registerLink').addEventListener('click', function(event) {
+            event.preventDefault();
+            document.getElementById('registerModal').style.display = 'flex';
+        });
+        
+        // Tutup modal pendaftaran
+        document.getElementById('cancelRegister').addEventListener('click', function() {
+            document.getElementById('registerModal').style.display = 'none';
+        });
+        
+        // Proses pendaftaran
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const registerError = document.getElementById('registerError');
+            
+            registerError.style.display = 'none';
+            
+            // Validasi
+            if (!email || !email.includes('@')) {
+                registerError.textContent = 'Email tidak valid';
+                registerError.style.display = 'block';
+                return;
+            }
+            
+            if (!password || password.length < 6) {
+                registerError.textContent = 'Kata sandi minimal 6 karakter';
+                registerError.style.display = 'block';
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                registerError.textContent = 'Konfirmasi kata sandi tidak sesuai';
+                registerError.style.display = 'block';
+                return;
+            }
+            
+            // Cek apakah email sudah digunakan
+            const existingUser = users.find(u => u.email === email);
+            if (existingUser) {
+                registerError.textContent = 'Email sudah digunakan';
+                registerError.style.display = 'block';
+                return;
+            }
+            
+            // Tambahkan pengguna baru
+            users.push({ email, password });
+            
+            // Simpan ke localStorage
+            localStorage.setItem('cvUsers', JSON.stringify(users));
+            
+            // Tutup modal dan tampilkan pesan sukses
+            document.getElementById('registerModal').style.display = 'none';
+            alert('Pendaftaran berhasil! Silakan login dengan akun baru Anda.');
+        });
+        
+        // Jika ada email yang diingat, isi otomatis
+        window.addEventListener('DOMContentLoaded', function() {
+            const rememberedEmail = sessionStorage.getItem('rememberedEmail');
+            if (rememberedEmail) {
+                document.getElementById('email').value = rememberedEmail;
+                document.getElementById('remember').checked = true;
+            }
+        });
+    </script>
+</body>
+</html>
